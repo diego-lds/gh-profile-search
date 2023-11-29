@@ -11,7 +11,22 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <main class="container mt-5">
             <h1 class="text-center mb-4">Buscador de Perfil</h1>
+            <div class="input-group mb-3">
+                <input
+                    type="text"
+                    id="username"
+                    class="form-control"
+                    placeholder="Usuário Github"
+                />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="search">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </main>
         
 
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
