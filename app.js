@@ -1,12 +1,43 @@
+var repos;
+var order = "asc";
 $(document).ready(function () {
   $("#search").click(function () {
     var username = $("#username").val();
     if (username === "") return;
-    username = "octocat";
+
     getUserProfile(username);
     getUserRepos(username);
   });
+
+  $("thead th").on("click", function () {
+    var column = $(this).data("col");
+
+    const sortedRepos = sortByColumn(column, order);
+    displayUserRepos(sortedRepos);
+    order = order === "asc" ? "desc" : "asc";
+  });
 });
+
+function sortByColumn(column, asc = "asc") {
+  const orderAsc = asc.toLowerCase() === "asc";
+
+  return [...repos].sort((a, b) => {
+    const valueA = a[column];
+    const valueB = b[column];
+
+    if (typeof valueA === "string" || typeof valueB === "string") {
+      const stringA = String(valueA).toLocaleLowerCase();
+      const stringB = String(valueB).toLocaleLowerCase();
+
+      return (
+        (stringA < stringB ? -1 : stringA > stringB ? 1 : 0) *
+        (orderAsc ? 1 : -1)
+      );
+    } else {
+      return (valueA - valueB) * (orderAsc ? 1 : -1);
+    }
+  });
+}
 
 async function getUserProfile(username) {
   const apiUrl = `https://api.github.com/users/${username}`;
@@ -57,8 +88,9 @@ async function getUserRepos(username) {
 
   try {
     const response = await axios(repoUrl);
-
-    displayUserRepos(response.data);
+    repos = response.data;
+    console.log(repos);
+    displayUserRepos(repos);
   } catch {
     console.error("Erro na requisição");
     displayError();
@@ -66,19 +98,17 @@ async function getUserRepos(username) {
 }
 
 function displayUserRepos(repos) {
-  const reposContainer = $("#repos-container");
-  reposContainer.empty();
+  const tbody = $("#repo-table");
+  tbody.empty();
 
-  $("#repos-list").empty();
+  repos.forEach(function (repo) {
+    const row = `
+        <tr>
+            <td>${repo.name}</td>
+            <td>${repo.stargazers_count}</td>
+        </tr>`;
 
-  $.each(repos, function (index, item) {
-    $("#repos-list").append(`
-    <li class='list-group-item d-flex'>
-        <div>
-            <span>${item.full_name}</span></br>
-            <span>Stars:${item.stargazers_count}</span>
-        </div>
-    </li>`);
+    tbody.append(row);
   });
 }
 

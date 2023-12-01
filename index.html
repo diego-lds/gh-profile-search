@@ -30,10 +30,16 @@
 
       <div id="profile-container"></div>
 
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <ul id="repos-list" class="list-group mt-5"></ul>
-        </div>
+      <div class="container mt-5">
+        <table class="table">
+          <thead>
+            <tr>
+              <th data-col="name">Nome</th>
+              <th data-col="stargazers_count">Estrelas</th>
+            </tr>
+          </thead>
+          <tbody id="repo-table"></tbody>
+        </table>
       </div>
     </main>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
