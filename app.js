@@ -16,6 +16,37 @@ $(document).ready(function () {
     displayUserRepos(sortedRepos);
     order = order === "asc" ? "desc" : "asc";
   });
+
+  if (window.location.pathname.includes("details.html")) {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const name = urlParams.get("name");
+    const description = urlParams.get("description");
+    const startgazers_count = urlParams.get("startgazers_count");
+    const language = urlParams.get("language");
+    const html_url = urlParams.get("html_url");
+
+    const detailsContainer = $("#details-container");
+    detailsContainer.empty();
+
+    const detailsCard = `
+      <div>
+        <h2>${name}</h2>
+        <p class="lead mt-3 mb-5">${description || "Descrição indisponível"}</p>
+        <p>
+          Estrelas:
+          <span class="badge">${startgazers_count}</span>
+        </p>
+        <p>
+          Linguagem utilizada: 
+          <span class="label label-primary">${language}</span>
+        </p>
+        <a href="${html_url}">Ver repositório</a>
+      </div>
+    `;
+
+    detailsContainer.append(detailsCard);
+  }
 });
 
 function sortByColumn(column, asc = "asc") {
@@ -89,7 +120,6 @@ async function getUserRepos(username) {
   try {
     const response = await axios(repoUrl);
     repos = response.data;
-    console.log(repos);
     displayUserRepos(repos);
   } catch {
     console.error("Erro na requisição");
@@ -102,10 +132,17 @@ function displayUserRepos(repos) {
   tbody.empty();
 
   repos.forEach(function (repo) {
+    const { name, description, stargazers_count, language, html_url } = repo;
+    console.log(repo);
+    const anchorTag = `
+    <a href="details.html?name=${name}&description=${description}&startgazers_count=${stargazers_count}&language=${language}&html_url=${html_url}">Detalhes</a>
+    `;
     const row = `
         <tr>
             <td>${repo.name}</td>
             <td>${repo.stargazers_count}</td>
+            <td>${anchorTag}
+            </td>
         </tr>`;
 
     tbody.append(row);

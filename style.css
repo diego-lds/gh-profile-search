@@ -14,3 +14,7 @@ body {
 ul {
   list-style: none;
 }
+
+tr {
+  cursor: pointer;
+}
